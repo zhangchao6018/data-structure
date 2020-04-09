@@ -50,9 +50,14 @@ public class LinkedList<E> {
 
     // 在链表头添加新的元素e
     public void addFirst(E e){
-        Node node = new Node(e, dummyhead.next);
-        this.dummyhead.next = node;
-        size++;
+//        Node node = new Node(e, dummyhead.next);
+//        this.dummyhead.next = node;
+//        size++;
+        add(0, e);
+    }
+    // 在链表末尾添加新的元素e
+    public void addLast(E e){
+        add(size, e);
     }
 
     // 在链表的index(0-based)位置添加新的元素e
