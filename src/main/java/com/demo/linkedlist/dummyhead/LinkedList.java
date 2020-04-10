@@ -172,9 +172,22 @@ public class LinkedList<E> {
 
     public void removeElement(E e){
         //遍历第一次拿到这个元素对应节点
-
+        Node<E> targetNode = dummyhead;
+        for (int i=0; i<size;i++){
+            targetNode = targetNode.next;
+            if (targetNode.e!=null && targetNode.e.equals(e)){
+                break;
+            }
+        }
         //再遍历一次拿到这个元素上一个父节点
-
+        Node<E> preNode = dummyhead;
+        for (int i=0; i<size;i++){
+            preNode = preNode.next;
+            if (preNode.next!=null && preNode.next.equals(targetNode)){
+                break;
+            }
+        }
+        preNode.next = targetNode.next;
 
     }
 
