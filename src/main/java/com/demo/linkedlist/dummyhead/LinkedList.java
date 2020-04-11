@@ -141,6 +141,8 @@ public class LinkedList<E> {
         }
         Node<E> result = pre.next;
         pre.next = result.next;
+        result.next=null;
+        size--;
         return result.e;
     }
 
