@@ -35,28 +35,27 @@ public class BST<E extends Comparable<E>> {
 
     // 向二分搜索树中添加新的元素e
     public void add(E e){
+        if (root==null){
+            root = new Node(e);
+        }else
         add(root, e);
     }
 
-    // 向以node为根的二分搜索树中插入元素e，递归算法
-    // 返回插入新节点后二分搜索树的根
-    private Node add(Node node, E e){
-        Node child ;
-        //初始化
-        if (root==null){
-            return new Node(e);
-        }else {
-            child = add(node, e);
-            if (root.e.compareTo(child.e)<0){
-                //元素应该往左边放
-                root.right = child;
-            }else {
-                //元素应该往右边放
-                root.left = child;
-            }
+    private void add(Node node, E e) {
+        if (node.e == null) {
+            node.e = e;
+            return;
         }
-       // root = node;
-        return child;
+        if (node.e.compareTo(e) > 0 && node.left!=null){
+            node = node.left;
+            add(node, e);
+            return;
+         }
+        else if ( node.e.compareTo(e) <0 && node.right!=null){
+            node = node.right;
+            add(node, e);
+            return;
+        }
     }
 
     public static void main(String[] args) {
