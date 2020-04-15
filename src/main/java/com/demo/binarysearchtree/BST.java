@@ -1,5 +1,9 @@
 package com.demo.binarysearchtree;
 
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
 /**
  * 二分搜索树
  * @param <E>
@@ -114,7 +118,11 @@ public class BST<E extends Comparable<E>> {
         return false;
     }
 
-    // 二分搜索树的前序遍历
+
+    /**
+     * 二分搜索树的前序遍历
+     *     先父节点 再左 再右 ->  搜索
+     */
     public void preOrder(){
         preOrder(root);
     }
@@ -129,7 +137,11 @@ public class BST<E extends Comparable<E>> {
         preOrder(node.right);
     }
 
-    // 二分搜索树的中序遍历
+
+    /**
+     * 二分搜索树的中序遍历
+     *      先处理左 再处理父 后处理右 ->元素是从小到大有序的
+     */
     public void inOrder(){
         inOrder(root);
     }
@@ -144,7 +156,12 @@ public class BST<E extends Comparable<E>> {
         inOrder(node.right);
     }
 
-    // 二分搜索树的后序遍历
+
+    /**
+     * 二分搜索树的后序遍历
+     *  先处理孩子节点
+     *      使用场景: 释放内存
+     */
     public void postOrder(){
         postOrder(root);
     }
@@ -158,6 +175,110 @@ public class BST<E extends Comparable<E>> {
         postOrder(node.right);
         System.out.println(node.e);
     }
+
+    // 二分搜索树的非递归前序遍历
+    public void preOrderNR(){
+        if (root == null)
+            return;
+        Stack<Node> stack = new Stack<Node>();
+        stack.push(root);
+        while (!stack.isEmpty()){
+            Node pop = stack.pop();
+            System.out.println(pop.e);
+            if (pop.right!=null)
+            stack.push(pop.right);
+            if (pop.left!=null)
+            stack.push(pop.left);
+        }
+    }
+
+    /**
+     * 二分搜索树的层序遍历
+     */
+    public void levelOrder(){
+        if (root==null)
+            return;
+        Queue<Node> q = new LinkedList();
+        q.add(root);
+        while (q.peek()!=null){
+            Node poll = q.poll();
+            System.out.println(poll.e);
+            if (poll.left!=null)
+            q.add(poll.left);
+            if (poll.right!=null)
+            q.add(poll.right);
+        }
+
+    }
+
+    /**
+     * 寻找二分搜索树的最小元素
+     * @return
+     */
+    public E minimum(){
+        if(size == 0)
+            throw new IllegalArgumentException("BST is empty");
+      return minimum(root).e;
+
+    }
+    private Node minimum(Node node){
+        if (node.left==null)
+            return node;
+        else
+            return minimum(node.left);
+    }
+
+    /**
+     *寻找二分搜索树的最大元素
+     * @return
+     */
+    public E maximum(){
+        if(size == 0)
+            throw new IllegalArgumentException("BST is empty");
+        return maximum(root).e;
+    }
+
+    private Node maximum(Node node){
+        if (node.right == null)
+            return node;
+        return maximum(node.right);
+    }
+
+    // 从二分搜索树中删除最小值所在节点, 返回最小值
+    public E removeMin(){
+        if(size == 0)
+            throw new IllegalArgumentException("BST is empty");
+
+        return removeMin(root);
+    }
+
+    private E removeMin(Node node){
+        if (node.left==null){
+            Node res = node;
+            node= node.right;
+            System.out.println("--------");
+            size--;
+            return res.e;
+        }
+        if ( node.left.left==null && node.left.right==null) {
+            Node res = node.left;
+            node.left = null;
+            size--;
+            return res.e;
+        }
+        if ( node.left.left==null && node.left.right!=null) {
+            Node res  = new Node(null);
+            res.e=node.left.e;
+            Node right = node.left.right;
+            //垃圾回收
+            node.left.right=null;
+            node.left.e = right.e;
+            size--;
+            return res.e;
+        }
+        return removeMin(node.left);
+    }
+
     @Override
     public String toString(){
         StringBuilder res = new StringBuilder();
@@ -187,14 +308,19 @@ public class BST<E extends Comparable<E>> {
 
     public static void main(String[] args) {
 
-        /////////////////
-        //      5      //
-        //    /   \    //
-        //   3    6    //
-        //  / \    \   //
-        // 2  4     8  //
+       ////////////////////////////
+       //         15             //
+       //       /    \           //
+       //      10     30         //
+       //     / \     / \        //
+       //    3  13   25  35      //
+       //   / \     /    / \     //
+       //  1   4  21    32  50   //
+       //                 \      //
+       //                  34    //
+       ///////////////// //////////
         BST<Integer> bst = new BST();
-        int[] nums = {5, 3, 6, 8, 4, 2};
+        int[] nums = {15, 10, 30, 3, 25, 13,35,4,32,50,21,34};
         for(int num: nums)
             bst.add(num);
         System.out.println(bst);
@@ -205,6 +331,16 @@ public class BST<E extends Comparable<E>> {
         bst.inOrder();
         System.out.println("后序");
         bst.postOrder();
-
+        System.out.println("非递归遍历");
+        bst.preOrderNR();
+        System.out.println("层序遍历");
+        bst.levelOrder();
+        Integer minimum = bst.minimum();
+        System.out.println("最小值:"+minimum);
+        Integer maximum = bst.maximum();
+        System.out.println("最大值:"+maximum);
+        Integer integer = bst.removeMin();
+        System.out.println("被移除的最小元素:"+integer);
+        bst.inOrder();
     }
 }
