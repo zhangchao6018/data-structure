@@ -320,7 +320,8 @@ public class BST<E extends Comparable<E>> {
        //                  34    //
        ///////////////// //////////
         BST<Integer> bst = new BST();
-        int[] nums = {15, 10, 30, 3, 25, 13,35,4,32,50,21,34};
+        //int[] nums = {15, 10, 30, 3, 25, 13,35,4,32,50,21,34,1};
+        int[] nums = {15};
         for(int num: nums)
             bst.add(num);
         System.out.println(bst);
