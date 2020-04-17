@@ -245,18 +245,33 @@ public class BST<E extends Comparable<E>> {
     }
 
     // 从二分搜索树中删除最小值所在节点, 返回最小值
-    public E removeMin(){
+    public E removeMin1(){
         if(size == 0)
             throw new IllegalArgumentException("BST is empty");
 
-        return removeMin(root);
+        return removeMin1(root);
     }
 
-    private E removeMin(Node node){
+    private E removeMin1(Node node){
+//        if (node.left==null){
+//            Node res = new Node(node.e);
+//            // node= node.right 思考:这种写法为什么错了?
+//            node.e= node.right==null?null:node.right.e;
+//            node.right = node.right==null?null:node.right.right;
+//            size--;
+//            return res.e;
+//        }
+        //以上写法 在只有一个根节点的情况会出错
         if (node.left==null){
-            Node res = node;
-            node= node.right;
-            System.out.println("--------");
+            Node res = new Node(node.e);
+            if (size==1){//处理特殊情况
+                root =null;
+                size--;
+            }else {
+                // node= node.right 思考:这种写法为什么错了?
+                node.e= node.right==null?null:node.right.e;
+                node.right = node.right==null?null:node.right.right;
+            }
             size--;
             return res.e;
         }
@@ -276,7 +291,146 @@ public class BST<E extends Comparable<E>> {
             size--;
             return res.e;
         }
-        return removeMin(node.left);
+        return removeMin1(node.left);
+    }
+
+    /**
+     * 从二分搜索树中删除最小值所在节点, 返回最小值
+     * @return
+     */
+    public E removeMin2(){
+        if(size == 0)
+            throw new IllegalArgumentException("BST is empty");
+        E minimum = minimum();
+
+        Node targetFather = findTargetFather(root, minimum);
+        if (targetFather == null){
+            root = root.right==null?null:root.right;
+            size--;
+        }else {
+            targetFather.e = targetFather.right==null?null:targetFather.right.e;
+            targetFather.right = targetFather.right==null?null:targetFather.right.right;
+            size--;
+        }
+        return minimum;
+    }
+    /**
+     * find to be deleted node‘s father node
+     *      if none null -> {15,16}
+     *      if null -> {15}
+     * @param node
+     * @param e
+     * @return
+     */
+    private Node findTargetFather(Node node,E e){
+        if (node.e.compareTo(e) == 0){
+            return null;
+        }
+        if (node.left !=null && node.left.e.compareTo(e) == 0){
+            return node;
+        }
+        return findTargetFather(node.left,e);
+    }
+
+    /**
+     * find to be deleted node
+     *      condition1:
+     *          left
+ *          condition2:
+     *          right
+     *      condition3:
+     *          root
+     *
+     * @param node
+     * @param e
+     * @return
+     */
+    private Node toBeDeletedNode(Node node, E e){
+        if (node.e.compareTo(e) == 0){
+            return node;
+        }
+        if (node.left!=null ){
+            return toBeDeletedNode(node.left,e);
+        }
+        else /* (node.right!=null)*/
+            return toBeDeletedNode(node.right,e);
+    }
+
+    public E removeMin(){
+        if(size == 0)
+            throw new IllegalArgumentException("BST is empty");
+        E minimum = minimum();
+        root = removeMin(root);
+        return minimum;
+    }
+    public Node removeMin(Node node){
+        if(node.left == null){
+            Node right = node.right;
+            node.right=null;
+            size--;
+            return right;
+        }
+        node.left= removeMin(node.left);
+        return node;
+    }
+
+    // 从二分搜索树中删除最大值所在节点
+    public E removeMax(){
+        if(size == 0)
+            throw new IllegalArgumentException("BST is empty");
+        E maximum = maximum();
+        root = removeMax(root);
+        return maximum;
+    }
+
+    private Node removeMax(Node node) {
+        if (node.right==null){
+            Node left = node.left;
+            node.left=null;
+            size --;
+            return left;
+        }
+        node.right = removeMax(node.right);
+        return node;
+    }
+
+    // 从二分搜索树中删除元素为e的节点
+    public void remove(E e){
+        if(size == 0)
+            throw new IllegalArgumentException("BST is empty");
+        root = remove(root,e);
+    }
+
+    //target左右节点都不为空  target替换成右边子树的最小值
+    private Node remove(Node root, E e) {
+        if (root==null){
+            return null;
+        }
+        if (root.e.compareTo(e)>0){
+            return remove(root.left,e);
+        }
+        if (root.e.compareTo(e)<0){
+            return remove(root.right,e);
+        }else {  //root.e.compareTo(e)==0
+            //此时root即为待删除节点
+            if (root.left==null){
+                System.out.println("target:"+root.right.e);
+
+//                Node right = root.right;
+//                root.right = null;
+//                root = right;
+//                size--;
+                System.out.println("iiiiii");
+            }else if (root.right==null){
+                root=root.left;
+                size--;
+            }
+            //左右都不为空
+            else {
+
+            }
+        }
+        return root;
     }
 
     @Override
@@ -318,10 +472,11 @@ public class BST<E extends Comparable<E>> {
        //  1   4  21    32  50   //
        //                 \      //
        //                  34    //
-       ///////////////// //////////
+       ////////////////////////////
         BST<Integer> bst = new BST();
-        //int[] nums = {15, 10, 30, 3, 25, 13,35,4,32,50,21,34,1};
-        int[] nums = {15};
+        int[] nums = {15, 10, 30, 3, 25, 13,35,4,32,50,21,34,1};
+//        int[] nums = {15,16};
+//        int[] nums = {15};
         for(int num: nums)
             bst.add(num);
         System.out.println(bst);
@@ -340,8 +495,13 @@ public class BST<E extends Comparable<E>> {
         System.out.println("最小值:"+minimum);
         Integer maximum = bst.maximum();
         System.out.println("最大值:"+maximum);
-        Integer integer = bst.removeMin();
-        System.out.println("被移除的最小元素:"+integer);
+//        Integer integer = bst.removeMin();
+//        System.out.println("被移除的最小元素:"+integer);
+//        System.out.println("移除结果：");
+//        Integer max = bst.removeMax();
+//        System.out.println("被移除的最大元素:"+max);
+//        System.out.println("移除结果：");
+        bst.remove(32);
         bst.inOrder();
     }
 }
