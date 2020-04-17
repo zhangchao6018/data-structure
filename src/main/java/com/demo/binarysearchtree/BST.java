@@ -373,6 +373,66 @@ public class BST<E extends Comparable<E>> {
         node.left= removeMin(node.left);
         return node;
     }
+
+    // 从二分搜索树中删除最大值所在节点
+    public E removeMax(){
+        if(size == 0)
+            throw new IllegalArgumentException("BST is empty");
+        E maximum = maximum();
+        root = removeMax(root);
+        return maximum;
+    }
+
+    private Node removeMax(Node node) {
+        if (node.right==null){
+            Node left = node.left;
+            node.left=null;
+            size --;
+            return left;
+        }
+        node.right = removeMax(node.right);
+        return node;
+    }
+
+    // 从二分搜索树中删除元素为e的节点
+    public void remove(E e){
+        if(size == 0)
+            throw new IllegalArgumentException("BST is empty");
+        root = remove(root,e);
+    }
+
+    //target左右节点都不为空  target替换成右边子树的最小值
+    private Node remove(Node root, E e) {
+        if (root==null){
+            return null;
+        }
+        if (root.e.compareTo(e)>0){
+            return remove(root.left,e);
+        }
+        if (root.e.compareTo(e)<0){
+            return remove(root.right,e);
+        }else {  //root.e.compareTo(e)==0
+            //此时root即为待删除节点
+            if (root.left==null){
+                System.out.println("target:"+root.right.e);
+
+//                Node right = root.right;
+//                root.right = null;
+//                root = right;
+//                size--;
+                System.out.println("iiiiii");
+            }else if (root.right==null){
+                root=root.left;
+                size--;
+            }
+            //左右都不为空
+            else {
+
+            }
+        }
+        return root;
+    }
+
     @Override
     public String toString(){
         StringBuilder res = new StringBuilder();
@@ -435,9 +495,13 @@ public class BST<E extends Comparable<E>> {
         System.out.println("最小值:"+minimum);
         Integer maximum = bst.maximum();
         System.out.println("最大值:"+maximum);
-        Integer integer = bst.removeMin();
-        System.out.println("被移除的最小元素:"+integer);
-        System.out.println("移除结果：");
+//        Integer integer = bst.removeMin();
+//        System.out.println("被移除的最小元素:"+integer);
+//        System.out.println("移除结果：");
+//        Integer max = bst.removeMax();
+//        System.out.println("被移除的最大元素:"+max);
+//        System.out.println("移除结果：");
+        bst.remove(32);
         bst.inOrder();
     }
 }
