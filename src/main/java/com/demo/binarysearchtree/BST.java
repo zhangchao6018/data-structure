@@ -253,11 +253,25 @@ public class BST<E extends Comparable<E>> {
     }
 
     private E removeMin1(Node node){
+//        if (node.left==null){
+//            Node res = new Node(node.e);
+//            // node= node.right 思考:这种写法为什么错了?
+//            node.e= node.right==null?null:node.right.e;
+//            node.right = node.right==null?null:node.right.right;
+//            size--;
+//            return res.e;
+//        }
+        //以上写法 在只有一个根节点的情况会出错
         if (node.left==null){
             Node res = new Node(node.e);
-            // node= node.right 经典的错误
-            node.e= node.right==null?null:node.right.e;
-            node.right = node.right==null?null:node.right.right;
+            if (size==1){//处理特殊情况
+                root =null;
+                size--;
+            }else {
+                // node= node.right 思考:这种写法为什么错了?
+                node.e= node.right==null?null:node.right.e;
+                node.right = node.right==null?null:node.right.right;
+            }
             size--;
             return res.e;
         }
@@ -288,19 +302,34 @@ public class BST<E extends Comparable<E>> {
         if(size == 0)
             throw new IllegalArgumentException("BST is empty");
         E minimum = minimum();
-//        Node toBeDeletedNode = toBeDeletedNode(root, minimum);
-//        System.out.println("target:"+toBeDeletedNode.e);
 
         Node targetFather = findTargetFather(root, minimum);
         if (targetFather == null){
-            root = null;
+            root = root.right==null?null:root.right;
+            size--;
         }else {
             targetFather.e = targetFather.right==null?null:targetFather.right.e;
             targetFather.right = targetFather.right==null?null:targetFather.right.right;
+            size--;
         }
-
-        //System.out.println(targetFather);
         return minimum;
+    }
+    /**
+     * find to be deleted node‘s father node
+     *      if none null -> {15,16}
+     *      if null -> {15}
+     * @param node
+     * @param e
+     * @return
+     */
+    private Node findTargetFather(Node node,E e){
+        if (node.e.compareTo(e) == 0){
+            return null;
+        }
+        if (node.left !=null && node.left.e.compareTo(e) == 0){
+            return node;
+        }
+        return findTargetFather(node.left,e);
     }
 
     /**
@@ -325,24 +354,6 @@ public class BST<E extends Comparable<E>> {
         }
         else /* (node.right!=null)*/
             return toBeDeletedNode(node.right,e);
-    }
-
-    /**
-     * find to be deleted node‘s father node
-     *      if none null -> {15,16}
-     *      if null -> {15}
-     * @param node
-     * @param e
-     * @return
-     */
-    private Node findTargetFather(Node node,E e){
-        if (node.e.compareTo(e) == 0){
-            return null;
-        }
-        if (node.left !=null && node.left.e.compareTo(e) == 0){
-            return node;
-        }
-        return findTargetFather(node.left,e);
     }
 
     @Override
@@ -386,7 +397,7 @@ public class BST<E extends Comparable<E>> {
        //                  34    //
        ////////////////////////////
         BST<Integer> bst = new BST();
-        //int[] nums = {15, 10, 30, 3, 25, 13,35,4,32,50,21,34,1};
+//        int[] nums = {15, 10, 30, 3, 25, 13,35,4,32,50,21,34,1};
 //        int[] nums = {15,16};
         int[] nums = {15};
         for(int num: nums)
@@ -409,7 +420,7 @@ public class BST<E extends Comparable<E>> {
         System.out.println("最大值:"+maximum);
         Integer integer = bst.removeMin();
         System.out.println("被移除的最小元素:"+integer);
-        System.out.println("一下是结果：");
+        System.out.println("移除结果：");
         bst.inOrder();
     }
 }
