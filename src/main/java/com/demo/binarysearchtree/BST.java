@@ -298,7 +298,7 @@ public class BST<E extends Comparable<E>> {
      * 从二分搜索树中删除最小值所在节点, 返回最小值
      * @return
      */
-    public E removeMin(){
+    public E removeMin2(){
         if(size == 0)
             throw new IllegalArgumentException("BST is empty");
         E minimum = minimum();
@@ -356,6 +356,23 @@ public class BST<E extends Comparable<E>> {
             return toBeDeletedNode(node.right,e);
     }
 
+    public E removeMin(){
+        if(size == 0)
+            throw new IllegalArgumentException("BST is empty");
+        E minimum = minimum();
+        root = removeMin(root);
+        return minimum;
+    }
+    public Node removeMin(Node node){
+        if(node.left == null){
+            Node right = node.right;
+            node.right=null;
+            size--;
+            return right;
+        }
+        node.left= removeMin(node.left);
+        return node;
+    }
     @Override
     public String toString(){
         StringBuilder res = new StringBuilder();
@@ -397,9 +414,9 @@ public class BST<E extends Comparable<E>> {
        //                  34    //
        ////////////////////////////
         BST<Integer> bst = new BST();
-//        int[] nums = {15, 10, 30, 3, 25, 13,35,4,32,50,21,34,1};
+        int[] nums = {15, 10, 30, 3, 25, 13,35,4,32,50,21,34,1};
 //        int[] nums = {15,16};
-        int[] nums = {15};
+//        int[] nums = {15};
         for(int num: nums)
             bst.add(num);
         System.out.println(bst);
