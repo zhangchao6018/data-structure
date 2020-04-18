@@ -395,44 +395,101 @@ public class BST<E extends Comparable<E>> {
     }
 
     // 从二分搜索树中删除元素为e的节点
-    public void remove(E e){
+    public void remove2(E e){
         if(size == 0)
             throw new IllegalArgumentException("BST is empty");
-        root = remove(root,e);
+        root = remove2(root,e);
     }
 
     //target左右节点都不为空  target替换成右边子树的最小值
-    private Node remove(Node root, E e) {
+    private Node remove2(Node root, E e) {
         if (root==null){
             return null;
         }
         if (root.e.compareTo(e)>0){
-            return remove(root.left,e);
+            //错误操作:  root =  remove(root.left,e); ->整个结果是空
+            root.left =  remove2(root.left,e);
         }
         if (root.e.compareTo(e)<0){
-            return remove(root.right,e);
+            root.right =  remove2(root.right,e);
         }else {  //root.e.compareTo(e)==0
             //此时root即为待删除节点
             if (root.left==null){
-                System.out.println("target:"+root.right.e);
-
-//                Node right = root.right;
-//                root.right = null;
-//                root = right;
-//                size--;
-                System.out.println("iiiiii");
+                Node right = root.right;
+                root.right = null;
+                root = right;
+                size--;
             }else if (root.right==null){
-                root=root.left;
+                Node left = root.left;
+                root.left = null;
+                root = left;
                 size--;
             }
-            //左右都不为空
+            //左右节点都不为空  移除节点替换成右子树的最小值
             else {
-
+                BST<E> rightBST = new BST();
+                rightBST.root=root.right;
+                //设置为1 纯粹是为了让removeMin方法不报错  更优雅的方法见remove(E e)
+                rightBST.size=1;
+                //该元素即为替换后的元素
+                E replace = rightBST.removeMin();
+                root.e = replace;
+                size--;
             }
         }
         return root;
     }
+    // 从二分搜索树中删除元素为e的节点
+    public void remove(E e){
+        root = remove(root, e);
+    }
 
+    // 删除掉以node为根的二分搜索树中值为e的节点, 递归算法
+    // 返回删除节点后新的二分搜索树的根
+    private Node remove(Node node, E e){
+
+        if( node == null )
+            return null;
+
+        if( e.compareTo(node.e) < 0 ){
+            node.left = remove(node.left , e);
+            return node;
+        }
+        else if(e.compareTo(node.e) > 0 ){
+            node.right = remove(node.right, e);
+            return node;
+        }
+        else{   // e.compareTo(node.e) == 0
+
+            // 待删除节点左子树为空的情况
+            if(node.left == null){
+                Node rightNode = node.right;
+                node.right = null;
+                size --;
+                return rightNode;
+            }
+
+            // 待删除节点右子树为空的情况
+            if(node.right == null){
+                Node leftNode = node.left;
+                node.left = null;
+                size --;
+                return leftNode;
+            }
+
+            // 待删除节点左右子树均不为空的情况
+
+            // 找到比待删除节点大的最小节点, 即待删除节点右子树的最小节点((同样也可以用找比待删除节点小的左子树最大元素代替)
+            // 用这个节点顶替待删除节点的位置
+            Node successor = minimum(node.right);
+            successor.right = removeMin(node.right);
+            successor.left = node.left;
+
+            node.left = node.right = null;
+
+            return successor;
+        }
+    }
     @Override
     public String toString(){
         StringBuilder res = new StringBuilder();
@@ -501,7 +558,8 @@ public class BST<E extends Comparable<E>> {
 //        Integer max = bst.removeMax();
 //        System.out.println("被移除的最大元素:"+max);
 //        System.out.println("移除结果：");
-        bst.remove(32);
+        bst.remove(30);
+        System.out.println("移除指定元素result:");
         bst.inOrder();
     }
 }
