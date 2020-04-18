@@ -490,6 +490,24 @@ public class BST<E extends Comparable<E>> {
             return successor;
         }
     }
+
+    // todo 从二分搜索树中找到比指定元素小(含)的离该元素最近的元素
+    public E floor(E e){
+        return null;
+    }
+    // todo 从二分搜索树中找到比指定元素大(含)的离该元素最近的元素
+    public E ceil(E e){
+        return null;
+    }
+    // todo 从二分搜索树中找到指定元素在树中的排名
+    public int rank(E e){
+        return 0;
+    }
+    // todo 从二分搜索树中找到排名为rank的元素 ->最好的方式是,每个节点同时维护一个size(以该节点为根的树的元素个数)
+    public E select(int rank){
+        return null;
+    }
+
     @Override
     public String toString(){
         StringBuilder res = new StringBuilder();
