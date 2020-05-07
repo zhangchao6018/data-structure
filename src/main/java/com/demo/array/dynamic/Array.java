@@ -1,7 +1,7 @@
 package com.demo.array.dynamic;
 
 /**
- * 基于java的泛型动态数组
+ * 基于java的泛型动态数 组
  */
 public class Array<E> {
 
