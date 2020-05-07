@@ -1,7 +1,7 @@
 package com.demo.array.basic;
 
 /**
- * 基于java的int 数组
+ * 基于java的int 数组0
  */
 public class BasicArray {
 
