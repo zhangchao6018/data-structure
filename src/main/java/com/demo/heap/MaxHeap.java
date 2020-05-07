@@ -44,6 +44,7 @@ public class MaxHeap<E extends Comparable<E>> {
         data.addLast(e);
         siftUp(data.getSize() - 1);
     }
+    //节点上浮
     private void siftUp(int k){
 
         while(k > 0 && data.get(parent(k)).compareTo(data.get(k)) < 0 ){
@@ -68,16 +69,21 @@ public class MaxHeap<E extends Comparable<E>> {
 
         return ret;
     }
-
+    //节点下沉
     private void siftDown(int k){
+
         while(leftChild(k) < data.getSize()){
-            if(data.get(leftChild(k)).compareTo(data.get(rightChild(k)))>0){
-                data.swap(k, leftChild(k));
-                siftDown(leftChild(k));
-            }else {
-                data.swap(k, rightChild(k));
-                siftDown(rightChild(k));
-            }
+            int j = leftChild(k); // 在此轮循环中,data[k]和data[j]交换位置
+            if( j + 1 < data.getSize() &&
+                    data.get(j + 1).compareTo(data.get(j)) > 0 )
+                j ++;
+            // data[j] 是 leftChild 和 rightChild 中的最大值
+
+            if(data.get(k).compareTo(data.get(j)) >= 0 )
+                break;
+
+            data.swap(k, j);
+            k = j;
         }
     }
     public static void main(String[] args) {
