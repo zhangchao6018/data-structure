@@ -7,30 +7,28 @@ import java.util.Arrays;
 /**
  * 描述: 选择排序--支持泛型
  * 循环不变量为以下的实现方式
- * arr[i...n)已排序  arr[0...i) 未排序
+ * arr[i...n)未排序  arr[0...i) 已排序
+ *
  * @Author: zhangchao
  * @Date: 8/11/20 11:51 下午
  **/
-public class SelectionSortGeneric {
+public class SelectionSortReverse {
     public static <E extends Comparable> void   sort(E [] arr){
-        for (int i = 0; i < arr.length; i++) {
-            int minIndex = i;
-            for (int j = i; j < arr.length; j++) {
-                if (arr[j].compareTo(arr[minIndex]) <=0){
-                    minIndex =j;
+        for (int i = arr.length-1; i>=0; i--){
+            int maxIdx = i;
+            for (int j =i; j>=0; j--){
+                if (arr[j].compareTo(arr[maxIdx])>0){
+                    maxIdx = j;
                 }
             }
-            //交换位置
-            if (minIndex != i){
-                swap(arr,i,minIndex);
-            }
+            swap(arr,i,maxIdx);
         }
     }
 
-    private static <E extends Comparable>  void swap(E [] arr, int i, int minIndex) {
+    private static <E extends Comparable>  void swap(E [] arr, int i, int targetIndex) {
         E temp = arr[i];
-        arr[i] = arr[minIndex];
-        arr[minIndex] = temp;
+        arr[i] = arr[targetIndex];
+        arr[targetIndex] = temp;
     }
 
     public static void main(String[] args) {
